@@ -1,0 +1,18 @@
+[
+  {
+    "id": "recs",
+    "name": "Movie Recommendations",
+    "niche": "movie recommendations: short, punchy lists of films with a clear hook and a reason to watch each one",
+    "default_format": "short",
+    "language": "English",
+    "voice_id": ""
+  },
+  {
+    "id": "explained",
+    "name": "Movie Explained",
+    "niche": "movie explainers: original commentary that analyses plot, themes and ending, written as opinionated analysis rather than a plain retelling",
+    "default_format": "long",
+    "language": "English",
+    "voice_id": ""
+  }
+]

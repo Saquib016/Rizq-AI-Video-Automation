@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CINEFORGE: movie video automation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="fx-beam"></div>
+<div class="fx-dust" id="dust"></div>
+
+<div class="curtain l"></div><div class="curtain r"></div>
+<div id="splash" title="Click to skip">
+  <div class="leader"><i class="h"></i><i class="v"></i><b id="count">3</b></div>
+  <small>CINEFORGE &nbsp;·&nbsp; movie video automation</small>
+</div>
+
+<div class="shell" id="shell">
+  <aside class="side">
+    <div class="brand">
+      <svg class="reel" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+        <circle cx="32" cy="32" r="29" stroke="#ffb02e" stroke-width="3"/>
+        <circle cx="32" cy="32" r="6" fill="#ffb02e"/>
+        <g fill="#07070c" stroke="#ffb02e" stroke-width="2.5">
+          <circle cx="32" cy="14" r="6.5"/><circle cx="48" cy="23" r="6.5"/><circle cx="48" cy="41" r="6.5"/>
+          <circle cx="32" cy="50" r="6.5"/><circle cx="16" cy="41" r="6.5"/><circle cx="16" cy="23" r="6.5"/>
+        </g>
+      </svg>
+      <div><h1>CINE<span>FORGE</span></h1><small>Movie video automation</small></div>
+    </div>
+    <nav id="nav">
+      <button data-view="new" class="active"><span data-icon="clapper"></span>New video</button>
+      <button data-view="jobs"><span data-icon="film"></span>Projects</button>
+      <button data-view="library"><span data-icon="reel"></span>Footage</button>
+      <button data-view="usage"><span data-icon="gauge"></span>Usage</button>
+      <button data-view="settings"><span data-icon="gear"></span>Settings</button>
+    </nav>
+    <div class="rec"><i></i><span id="rec-text">Standby</span></div>
+    <div class="keys" id="keys"></div>
+  </aside>
+
+  <main>
+    <!-- NEW VIDEO -->
+    <section id="view-new" class="view">
+      <div class="hero">
+        <div class="eyebrow">Auto-pilot for movie channels</div>
+        <h1 id="hero-title"><span class="hot">Lights.</span> Camera. Automate.</h1>
+        <p>Type a title or paste a link. CINEFORGE writes the script, finds each movie's trailer, voices it, scores it to the film's mood, edits it, and waits for your approval.</p>
+        <div class="stats" id="stats"></div>
+      </div>
+      <div class="marquee" aria-hidden="true"><div id="marquee"></div></div>
+
+      <form id="new-form" class="card ticket glow">
+        <div class="seg" id="mode-seg"><span class="pill"></span>
+          <button type="button" data-mode="title" class="on">From a title</button>
+          <button type="button" data-mode="link">From a link</button>
+        </div>
+        <label id="title-row"><span id="title-label">Video title or topic</span>
+          <input id="f-title" placeholder="3 Korean thrillers that will mess with your mind">
+        </label>
+        <label id="url-row" hidden>Source video link
+          <input id="f-url" placeholder="https://www.youtube.com/watch?v=...">
+        </label>
+        <label id="rights-row" class="check" hidden>
+          <input type="checkbox" id="f-rights">
+          <span>I own this video, or it is licensed / Creative Commons, or I have permission to reuse it.</span>
+        </label>
+        <div class="grid2">
+          <label>Channel <select id="f-channel"></select></label>
+          <label>Format
+            <select id="f-format"><option value="short">Short (vertical, ~40s)</option><option value="long">Long (horizontal, 3-4 min)</option></select>
+          </label>
+          <label>Language <input id="f-lang" placeholder="English"></label>
+          <label>Voice
+            <select id="f-vprov"><option value="">Default from Settings</option><option value="edge">Free voice (no credits)</option><option value="elevenlabs">ElevenLabs</option><option value="openai">ChatGPT voice</option></select>
+          </label>
+        </div>
+        <label>Voice ID / name <span class="field-help">optional. ElevenLabs voice ID, Edge voice name, or an OpenAI voice such as alloy</span>
+          <input id="f-voice" placeholder="Leave empty to use the one in Settings">
+        </label>
+        <label>Movies in this video
+          <select id="f-count"><option value="auto">Auto (from my title)</option><option value="one">One movie (Shorts ~20 s, told by the main character)</option><option value="many">Several movies (a list)</option></select>
+        </label>
+        <label class="check"><input type="checkbox" id="f-trailers" checked><span><strong>Use each movie's official trailer</strong> for the scenes, switching trailers as the script moves to the next film.</span></label>
+        <label class="check"><input type="checkbox" id="f-unique" checked><span><strong>Never repeat a movie</strong> I have already covered.</span></label>
+        <label class="check"><input type="checkbox" id="f-pexels" checked><span>Fill gaps with free stock footage.</span></label>
+        <div class="row"><button class="primary action" type="submit">ACTION ▶</button><span id="new-msg" class="msg"></span></div>
+      </form>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="view-jobs" class="view" hidden>
+      <div class="eyebrow">Production board</div>
+      <h1 style="font-size:3.4rem;margin:.4rem 0 1.2rem">PROJECTS</h1>
+      <details class="card" id="used-box" style="margin-bottom:1rem">
+        <summary><strong>Movies already used</strong> <span class="muted" id="used-count"></span></summary>
+        <p class="muted" style="margin:.6rem 0 0">New videos never repeat these. Add films you posted before using this tool, one per line (year optional, e.g. <em>Parasite (2019)</em>).</p>
+        <textarea id="used-add" placeholder="Parasite (2019)&#10;Oldboy&#10;Se7en"></textarea>
+        <div class="row"><button class="ghost" id="used-btn" type="button">Add to the list</button><span class="msg" id="used-msg"></span></div>
+        <div id="used-list" class="stack"></div>
+      </details>
+      <div id="jobs-list" class="stack"></div>
+    </section>
+
+    <!-- FOOTAGE -->
+    <section id="view-library" class="view" hidden>
+      <div class="eyebrow">Your own clips</div>
+      <h1 style="font-size:3.4rem;margin:.4rem 0 .6rem">FOOTAGE LIBRARY</h1>
+      <p class="muted" style="max-width:58ch">Clips and stills you are allowed to use. The editor matches them to your script by description, so say what is on screen.</p>
+      <form id="lib-form" class="card" style="margin:1rem 0">
+        <label>File <input type="file" id="l-file" accept="video/*,image/*"></label>
+        <label>What is shown <input id="l-desc" placeholder="man walking alone through a rainy neon street at night"></label>
+        <label>Licence <select id="l-lic"><option value="own">I own it</option><option value="licensed">Licensed to me</option><option value="cc">Creative Commons</option></select></label>
+        <div class="row"><button class="primary" type="submit">Add to library</button><span id="lib-msg" class="msg"></span></div>
+      </form>
+      <div id="lib-list" class="stack"></div>
+    </section>
+
+    <!-- USAGE -->
+    <section id="view-usage" class="view" hidden>
+      <div class="eyebrow">Credits and limits</div>
+      <h1 style="font-size:3.4rem;margin:.4rem 0 .6rem">USAGE TODAY</h1>
+      <p class="muted" style="max-width:62ch">What this app used today, your remaining ElevenLabs credits, and how many more videos you can make before a limit stops you. Daily limits reset at midnight Pacific time.</p>
+      <div id="usage-box" class="stack" style="margin-top:1rem"></div>
+      <div class="row" style="margin-top:1rem"><button class="ghost" id="usage-refresh" type="button">Refresh</button></div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="view-settings" class="view" hidden>
+      <div class="eyebrow">Control room</div>
+      <h1 style="font-size:3.4rem;margin:.4rem 0 .6rem">SETTINGS</h1>
+      <div class="sticky-save"><span class="msg" id="set-msg">Changes are saved to your .env file and apply at once, no restart needed.</span><button class="primary" id="set-save" type="button">Save all</button></div>
+      <div id="settings-box"><div class="skel"></div></div>
+    </section>
+  </main>
+</div>
+<script src="/static/app.js"></script>
+</body>
+</html>

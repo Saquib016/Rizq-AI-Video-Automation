@@ -1,0 +1,14 @@
+fastapi>=0.110
+uvicorn[standard]>=0.29
+python-multipart>=0.0.9
+python-dotenv>=1.0
+requests>=2.31
+anthropic>=0.40   # only used if LLM_PROVIDER=anthropic
+tzdata>=2024.1   # lets the Usage page follow Pacific time on Windows
+edge-tts>=7.3.1   # older versions get HTTP 403 since Microsoft changed its token check (Oct 2026)
+Pillow>=10.1
+yt-dlp>=2024.8.6
+google-api-python-client>=2.120
+google-auth-oauthlib>=1.2
+google-auth-httplib2>=0.2
+# Optional (better clip matching, large download): sentence-transformers
